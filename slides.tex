@@ -1,0 +1,174 @@
+\documentclass[14pt,aspectratio=169]{beamer}
+
+\author{Jim Fowler \\ Department of Mathematics \\ The Ohio State University}
+\date{January 13, 2016}
+\title{Mystery in Mathematics: \\ Diffie-Hellman Key Exchange}
+
+\definecolor{ccgray}{HTML}{a7b1a6}
+
+
+\usepackage{xcolor}
+\usepackage{pgf}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pdfpages}
+
+
+\makeatletter
+\define@key{beamerframe}{nofills}[true]{% top
+  \beamer@frametopskip=0pt\relax%
+  \beamer@framebottomskip=0pt\relax%
+  \beamer@frametopskipautobreak=\beamer@frametopskip\relax%
+  \beamer@framebottomskipautobreak=\beamer@framebottomskip\relax%
+  \def\beamer@initfirstlineunskip{%
+    \def\beamer@firstlineitemizeunskip{%
+      \vskip-\partopsep\vskip-\topsep\vskip-\parskip%
+      \global\let\beamer@firstlineitemizeunskip=\relax}%
+    \everypar{\global\let\beamer@firstlineitemizeunskip=\relax}}
+}
+\makeatother
+
+\setbeamertemplate{navigation symbols}{}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\end{frame}
+
+\begin{frame}
+  \Huge
+
+  \begin{center}
+    Mystery of Mathematics
+  \end{center}
+\end{frame}
+
+\begin{frame}
+\hangindent=0.7cm Wigner, Eugene P. ``The unreasonable effectiveness of mathematics in the natural sciences.'' \textit{Communications on pure and applied mathematics} 13, no. 1 (1960): 1--14.
+
+\vfill
+
+\hangindent=0.7cm Putnam, Hilary. ``What is mathematical truth?'' \textit{Historia Mathematica} 2, no. 4 (1975): 529--533.
+
+\vfill
+
+\hangindent=0.7cm Cheng, Eugenia. ``Mathematics, morally.'' (2004).
+\end{frame}
+
+\begin{frame}
+  \Huge
+
+  \begin{center}
+    Mystery from Mathematics
+  \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \huge
+
+  Can two friends, Alice and Bob, \\
+  \quad communicate in public \\
+  \quad \quad (with eavesdroppers!) \\
+  and nevertheless \\
+  \quad come to agree on a secret \\
+  \quad only they share?
+\end{frame}
+
+\newcommand{\swatch}[1]{\textcolor{#1}{\rule{12pt}{12pt}}}
+
+\newcommand{\aliceroombob}[3]{%
+  \begin{tabular}{@{}p{0.33\textwidth}@{}p{0.33\textwidth}@{}p{0.33\textwidth}@{}}
+    \begin{center}#1\end{center} & \begin{center}#2\end{center} & \begin{center}#3\end{center} 
+  \end{tabular}\\[-6ex]}
+
+\newcommand{\alice}[1]{\aliceroombob{#1}{}{}}
+\newcommand{\alicebob}[2]{\aliceroombob{#1}{}{#2}}
+\newcommand{\room}[1]{\aliceroombob{}{#1}{}}
+\newcommand{\bob}[1]{\aliceroombob{}{}{#1}}
+
+
+\begin{frame}[nofills]
+  \aliceroombob
+  {\textbf{Alice's Mind}}
+  {\textbf{The Room}}
+  {\textbf{Bob's Mind}}
+  
+  \uncover<2->{\room{``Start with \swatch{yellow}.''}}
+  \alicebob{\uncover<3->{Pick \swatch{blue!75!white}}}{\uncover<4->{Pick \swatch{red}}}
+  \alicebob
+  {\uncover<5->{Mix \swatch{yellow} and \swatch{blue!75!white} = \swatch{green!75!black}}}
+  {\uncover<7->{Mix \swatch{yellow} and \swatch{red} = \swatch{orange}}}
+  \uncover<6->{\room{Alice says, ``\,\swatch{green!75!black}.''}}
+  \uncover<8->{\room{Bob says, ``\,\swatch{orange}.''}}
+  \alicebob{\uncover<9->{Mix \swatch{orange} and \swatch{blue!75!white} = \swatch{brown}}}
+  {\uncover<10->{Mix \swatch{green!75!black} and \swatch{red} = \swatch{brown}}}
+  \uncover<11->{\alicebob{Our secret is \swatch{brown}}{Our secret is \swatch{brown}}}
+
+\end{frame}
+
+\newcommand{\snumber}[2]{\colorbox{#1}{\textcolor{white}{#2}}}
+\newcommand{\lnumber}[2]{\colorbox{#1}{\textcolor{black}{#2}}}
+
+\begin{frame}[nofills]
+  \aliceroombob
+  {\textbf{Alice's Mind}}
+  {\textbf{The Room}}
+  {\textbf{Bob's Mind}}
+  
+  \uncover<2->{\room{``Start with \lnumber{yellow}{2}.''}}
+  \alicebob{\uncover<3->{Pick \snumber{blue!75!white}{24}.}}{\uncover<4->{Pick \snumber{red}{17}.}}
+  \alicebob
+  {\uncover<5->{$M(\lnumber{yellow}{2}, \snumber{blue!75!white}{24}) = \snumber{green!75!black}{20}$.}}
+  {\uncover<7->{$M(\lnumber{yellow}{2}, \snumber{red}{17}) = \snumber{orange}{21}$.}}
+  \uncover<6->{\room{Alice says, ``\,\snumber{green!75!black}{20}.''}}
+  \uncover<8->{\room{Bob says, ``\,\snumber{orange}{21}.''}}
+  \alicebob{\uncover<9->{$M(\snumber{orange}{21}, \snumber{blue!75!white}{24}) = \snumber{brown}{25}$.}}
+  {\uncover<10->{$M(\snumber{green!75!black}{20}, \snumber{red}{17}) = \snumber{brown}{25}$.}}
+  \uncover<11->{\alicebob{Our secret is \snumber{brown}{25}.}{Our secret is \snumber{brown}{25}.}}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Why does this work?}
+
+  \Large
+
+  In this case, \[M(M(\lnumber{yellow}{2}, \snumber{blue!75!white}{24}), \snumber{red}{17}) =
+  M(M(\lnumber{yellow}{2}, \snumber{red}{17}), \snumber{blue!75!white}{24}).\]
+
+\vfill
+
+  In general, \[M(M(\lnumber{yellow}{2},a),b) = M(M(\lnumber{yellow}{2},b),a).\]
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THANK YOU
+ \begin{frame}[label=thanks,nofills]
+   \vfill
+   \begin{center}
+   \Huge
+    \scalebox{1.5}{\textbf{Thank You}}
+   \end{center}
+   \vfill
+   \vfill
+   \includegraphics[width=1in]{images/cc-logo.pdf}\hfill\footnotesize\scalebox{0.75}{\textcolor{ccgray}{Licensed for reuse under a Creative Commons BY-SA License}}
+   \null
+   %\vspace{12pt}
+   \null
+ \end{frame}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
